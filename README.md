@@ -1,13 +1,18 @@
+
 # coco-mode for xyzzy
 
 CoffeeScriptの方言[Coco](http://satyr.github.com/coco/)用メジャーモード
 
+
 ## インストール
 - NetInstallerよりインストール
-  [package.l](http://youz.github.com/xyzzy/package.l) を登録し、パッケージ`*scrape*`よりインストールして下さい。
+
+    http://youz.github.com/xyzzy/package.l を登録し、パッケージ`*scrape*`より
+    インストールして下さい。
+
 - 手動インストール
-  ページ上部Downloadリンクよりソース一式をダウンロードし、アーカイブ内の
-  coco-mode.lを`*load-path*`に配置してください。
+
+    coco-mode.lを`*load-path*`に配置してください。
 
 
 ## node.js と Cocoのインストール
@@ -19,10 +24,10 @@ CoffeeScriptの方言[Coco](http://satyr.github.com/coco/)用メジャーモー�
 
 ## .xyzzy設定例
 
-   (require "coco-mode")
-   (setq coco:*command-path* "c:/path/to/node.exe c:/path/to/coco/lib/command.js"
-         coco:*compiled-buffer-mode* 'jscript-mode)
-   (push '("\\.co\\(ffee\\)?$" . ed:coco-mode) *auto-mode-alist*)
+    (require "coco-mode")
+    (setq coco:*command-path* "c:/path/to/node.exe c:/path/to/coco/lib/command.js"
+          coco:*compiled-buffer-mode* 'jscript-mode)
+    (push '("\\.co\\(ffee\\)?$" . ed:coco-mode) *auto-mode-alist*)
 
 - `coco:*command-path*` -> cocoのコマンドライン実行用パス
 - `coco:*compiled-buffer-mode*` -> コンパイル結果のJavaScriptソース表示用バッファのメジャーモード
@@ -43,7 +48,17 @@ CoffeeScriptの方言[Coco](http://satyr.github.com/coco/)用メジャーモー�
 - TAB -- indent-or-dabbrev-expand
 
 ### repl バッファ用キーバインド
-- C-j -- 改行
+- C-j -- 改行 (複数行入力用)
 - TAB -- indent-or-dabbrev-expand
+- C-c C-z -- 終了
 
-他は`*shell-mode-map*`と同じ
+他は`*shell-mode-map*`と同じです。
+
+
+## Author
+Yousuke Ushiki (<citrus.yubeshi@gmail.com>)
+
+[@Yubeshi](http://twitter.com/Yubeshi/)
+
+## License
+GPLv2

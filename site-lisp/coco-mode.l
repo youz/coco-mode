@@ -55,7 +55,7 @@
   (setq *keymap* (make-sparse-keymap))
   (define-key *keymap* #\RET 'smart-newline)
   (define-key *keymap* #\TAB 'indent-or-dabbreb-expand)
-  (define-key *keymap* '(#\C-c #\s) 'compile-file-to-js)
+  (define-key *keymap* '(#\C-c #\C-s) 'compile-file-and-show)
   (define-key *keymap* '(#\C-c #\i) 'repl)
   (define-key *keymap* '(#\C-c #\I) 'rcpl)
   (define-key *keymap* '(#\C-c #\c) 'compile-buffer)
@@ -151,24 +151,36 @@
 
 
 ;;; compile file
-(defun compile-file-to-js (&optional bear)
-  (interactive "P" :default0 t :title0 "bear: ")
+(defun compile-file-to-js (src &optional bear show)
+  (unless *command-path*
+    (error "*command-path* Çê›íËÇµÇƒÇ≠ÇæÇ≥Ç¢"))
+  (message "compiling ~A ..." src)
+  (let* ((jsfn (concat (substitute-string src (concat "\\." (pathname-type src) "$") "") ".js"))
+	 (logfile (make-temp-file-name))
+	 (proc (call-process (format nil "~A -~@[b~*~]c \"~A\"" *command-path* bear src)
+			     :output logfile :wait t)))
+    (if (and (file-exist-p logfile)
+	     (> (file-length logfile) 0))
+	(let ((buf (get-buffer-create *output-buffer-name*)))
+	  (pop-to-buffer buf)
+	  (read-file logfile))
+      (when (and show (file-exist-p jsfn))
+	(find-file-other-window jsfn)))
+    (delete-file logfile :if-does-not-exist :skip :if-access-denied :skip)
+    (message "done. ~A" jsfn)))
+
+(defun compile-file-and-show (bear)
+  (interactive "P" :default0 nil)
   (unless *command-path*
     (error "*command-path* Çê›íËÇµÇƒÇ≠ÇæÇ≥Ç¢"))
   (when (need-buffer-save-p (selected-buffer))
     (case (message-box "ï€ë∂ÇµÇ‹Ç∑Ç©?" "ï€ë∂ämîF" '(:question :yes-no-cancel))
-      (:cancel (return-from compile-file-to-js nil))
+      (:cancel (return-from compile-file-and-show nil))
       (:yes (call-interactively 'save-buffer))
       (:no t)))
   (let ((fn (get-buffer-file-name)))
     (when fn
-      (let ((jsfn (substitute-string fn (concat (pathname-type fn) "$") ".js"))
-	    (proc (make-process (format nil "~A -c \"~A\"" *command-path* fn)
-				:output (get-buffer-create *output-buffer-name*))))
-	(while (eq (process-status proc) :run)
-	  (sleep-for 0.1))
-	(when (file-exist-p jsfn)
-	  (find-file-other-window jsfn))))))
+      (compile-file-to-js fn bear t))))
 
 
 ;; repl

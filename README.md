@@ -32,15 +32,16 @@ CoffeeScriptの方言[Coco](http://satyr.github.com/coco/)用メジャーモー�
 - `coco:*command-path*` -> cocoのコマンドライン実行用パス
 - `coco:*compiled-buffer-mode*` -> コンパイル結果のJavaScriptソース表示用バッファのメジャーモード
 
-## キーバインド
+## デフォルトキーバインド
 
 - C-c l -- list-function (関数一覧表示)
 - C-c r -- evaluate-buffer (バッファ全体の内容をCocoで実行し、結果を表示)
-- C-c R -- evaluate-region (リージョンの内容をCocoで実行し、結果を表示)
+- C-c C-r -- evaluate-region (リージョンの内容をCocoで実行し、結果を表示)
 - C-c c -- compile-buffer (バッファ全体の内容をJavaScriptにコンパイルし、結果を表示)
-- C-c C -- compile-region (リージョンの内容をJavaScriptにコンパイルし、結果を表示)
-- C-c i -- repl (CoffeeScriptのreplを起動)
-- C-c I -- rcpl (CoffeeScriptインタラクティブコンパイラを起動)
+- C-c C-c -- compile-region (リージョンの内容をJavaScriptにコンパイルし、結果を表示)
+- C-c C-s -- compile-file-and-show (編集中のファイルをJavaScriptにコンパイルし、作成されたJSファイルを開く)
+- C-c i -- repl (Cocoのreplを起動)
+- C-c I -- rcpl (Cocoのインタラクティブコンパイラを起動)
 - C-c C-x r -- evaluate-buffer-in-repl (バッファ全体の内容をrepl上で評価)
 - C-c C-x C-r -- evaluate-buffer-in-repl (リージョンの内容をrepl上で評価)
 - C-c C-x c -- compile-buffer-in-rcpl (バッファ全体の内容をrcpl上で評価)

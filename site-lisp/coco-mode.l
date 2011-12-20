@@ -2,12 +2,18 @@
 
 ;; coco-mode.l - Coco用メジャーモード for xyzzy
 
-(defpackage "coco-mode"
+(provide "coco-mode")
+
+(in-package :editor)
+(export '(coco-mode))
+
+(defpackage :coco-mode
   (:nicknames "coco")
   (:use :lisp :editor))
 
-(in-package "coco")
+(in-package :coco)
 (export '(*command-path* *compiled-buffer-mode* *keymap* *repl-keymap*
+	  *additional-keyword-files*
 	  *tab-width* *hook*))
 
 (defvar *command-path* nil
@@ -30,17 +36,23 @@
 (defvar *rcpl-buffer-name* "*coco-compiler*")
 
 (defvar *keyword-file* "Coco")
+(defvar *additional-keyword-files* nil)
 (defvar *keyword-table* nil)
+
 (defun load-keyword ()
-  (or *keyword-table*
-      (setq *keyword-table*
-	    (load-keyword-file *keyword-file*))))
+  (unless *keyword-table*
+    (let ((tbl (load-keyword-file *keyword-file*)))
+      (dolist (kwf *additional-keyword-files*)
+	(setq tbl (load-keyword-file kwf nil tbl)))
+      (setq *keyword-table* tbl)))
+  *keyword-table*)
 
 (defparameter *keyword-regexps*
   (compile-regexp-keyword-list
    '(("\\\\.[^] \t\f\n,)}]*" t :string nil)
      ("<\\[\\(.+?\\)\\]>"   t :string nil 1 1)
-     ("@[a-zA-Z0-9_]+"      t (:keyword 1))
+     ("@@[a-zA-Z0-9_]*" t (:keyword 2))
+     ("@[a-zA-Z0-9_]*" t (:keyword 1))
      ("->"                  t (:keyword 0) nil)
      )))
 
@@ -439,6 +451,7 @@ line? Returns `t' or `nil'. See the README for more details."
 
 ;;; mode definition
 (in-package "editor")
+
 (defun coco-mode ()
   (interactive)
   (kill-all-local-variables)
@@ -458,6 +471,3 @@ line? Returns `t' or `nil'. See the README for more details."
   (make-local-variable '*post-command-hook*)
   (run-hooks 'coco::*hook*))
 
-(export '(coco-mode))
-
-(provide "coco-mode")

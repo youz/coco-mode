@@ -105,41 +105,52 @@
   (set-syntax-end-multi-comment *syntax-table* "*/"))
 
 
+;;; utility
+(defun to-utf8 (str)
+  (convert-encoding-from-internal *encoding-utf8n* str))
+
+
 ;;; compile, eval
 (defun compile-region (from to)
   (interactive "r")
-  (let ((src (buffer-substring from to)))
-    (send-string src "bcp" t)))
+  (send-region from to "bcp" t))
 
 (defun compile-buffer ()
   (interactive)
-  (compile-region (point-min) (point-max)))
+  (send-region (point-min) (point-max) "bcp" t))
 
 (defun evaluate-region (from to)
   (interactive "r")
-  (let ((src (buffer-substring from to)))
-    (send-string src "bcp")))
+  (send-region from to ""))
 
 (defun evaluate-buffer ()
   (interactive)
-  (evaluate-region (point-min) (point-max)))
+  (send-region (point-min) (point-max) ""))
 
 (defun ast-region (from to)
   (interactive "r")
-  (let ((src (buffer-substring from to)))
-    (send-string src "ajp" t)))
+  (send-region from to "ajp" t))
 
 (defun ast-buffer ()
   (interactive)
-  (ast-region (point-min) (point-max)))
+  (send-region (point-min) (point-max) "ajp" t))
 
 (defun send-string (str opt &optional set-mode)
+  (let ((buf (create-new-buffer "coco-temp")))
+    (save-excursion
+      (set-buffer buf)
+      (insert str)
+      (unwind-protect
+	  (send-region (point-min) (point-max) opt set-mode)
+	(delete-buffer buf)))))
+
+(defun send-region (from to opt &optional set-mode)
   (unless *command-path*
     (error "*command-path* Çê›íËÇµÇƒÇ≠ÇæÇ≥Ç¢"))
-  (let* ((infile #0=(make-temp-file-name))
+  (let* ((infile #0=(make-temp-file-name "coco"))
 	 (outfile #0#)
 	 (cmd (format nil "~A -~A \"~A\"" *command-path* opt infile)))
-    (with-open-file (os infile :direction :output) (princ str os))
+    (write-region from to infile nil *encoding-utf8n*)
     (unwind-protect
 	(prog1
 	    (multiple-value-bind (cmdline dir)
@@ -224,7 +235,9 @@
     (values buf
 	    (make-process (format nil "~A -~Ai" *command-path* opt)
 			  :output buf
-			  :environ '(("NODE_DISABLE_COLORS" . "1"))))))
+			  :environ '(("NODE_DISABLE_COLORS" . "1"))
+			  :incode *encoding-utf8n*
+			  :outcode *encoding-utf8n*))))
 
 (defun evaluate-region-in-repl (from to)
   (interactive "r")

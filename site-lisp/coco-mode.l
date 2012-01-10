@@ -8,7 +8,7 @@
 (export '(coco-mode))
 
 (defpackage :coco-mode
-  (:nicknames "coco")
+  (:nicknames :coco)
   (:use :lisp :editor))
 
 (in-package :coco)
@@ -450,24 +450,22 @@ line? Returns `t' or `nil'. See the README for more details."
 
 
 ;;; mode definition
-(in-package "editor")
-
-(defun coco-mode ()
+(defun ed::coco-mode ()
   (interactive)
   (kill-all-local-variables)
   (setq mode-name "Coco"
-	buffer-mode 'coco-mode
+	buffer-mode 'ed::coco-mode
 	comment-start "#"
 	comment-end "")
-  (use-syntax-table coco::*syntax-table*)
-  (use-keymap coco::*keymap*)
+  (use-syntax-table *syntax-table*)
+  (use-keymap *keymap*)
   (make-local-variable 'keyword-hash-table)
-  (setq keyword-hash-table (coco::load-keyword))
+  (setq keyword-hash-table (load-keyword))
   (make-local-variable 'regexp-keyword-list)
-  (setq regexp-keyword-list coco::*keyword-regexps*)
-  (make-local-variable 'build-summary-function)
-  (setq build-summary-function 'coco::summary-of-functions)
+  (setq regexp-keyword-list *keyword-regexps*)
+  (make-local-variable 'ed::build-summary-function)
+  (setq ed::build-summary-function 'summary-of-functions)
   (ed::set-buffer-local 'indent-tabs-mode nil)
   (make-local-variable '*post-command-hook*)
-  (run-hooks 'coco::*hook*))
+  (run-hooks '*hook*))
 

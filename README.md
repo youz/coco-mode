@@ -27,7 +27,7 @@ CoffeeScriptの方言[Coco](http://satyr.github.com/coco/)用メジャーモー�
     (require "coco-mode")
     (setq coco:*command-path* "c:/path/to/node.exe c:/path/to/coco/lib/command.js"
           coco:*compiled-buffer-mode* 'jscript-mode)
-    (push '("\\.co\\(ffee\\)?$" . ed:coco-mode) *auto-mode-alist*)
+    (push '("\\.co$" . ed:coco-mode) *auto-mode-alist*)
 
 - `coco:*command-path*` -> cocoのコマンドライン実行用パス
 - `coco:*compiled-buffer-mode*` -> コンパイル結果のJavaScriptソース表示用バッファのメジャーモード

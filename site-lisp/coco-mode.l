@@ -4,6 +4,9 @@
 
 (provide "coco-mode")
 
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (require "shell"))
+
 (in-package :editor)
 (export '(coco-mode))
 
